@@ -18,9 +18,7 @@ package object functions {
         val record = line.split("\\t")
         val MS_IN_HOUR = 1000 * 60 * 60
         if (record.length == 5)
-          Some(Activity(record(0).toLong / MS_IN_HOUR * MS_IN_HOUR, record(1), record(2), record(3), record(4),
-            Map("topic"-> or.topic, "kafkaPartition" -> or.partition.toString,
-            "fromOffset" -> or.fromOffset.toString, "untilOffset" -> or.untilOffset.toString)))
+          Some(Activity(record(0), record(1), record(2), record(3), record(4)))
         else
           None
       }

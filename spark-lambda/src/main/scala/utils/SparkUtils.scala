@@ -14,20 +14,21 @@ object SparkUtils {
     ManagementFactory.getRuntimeMXBean.getInputArguments.toString.contains("IntelliJ IDEA")
   }
   def getSparkContext(appName: String) = {
-    var checkpointDirectory = ""
+    var checkpointDirectory = "/home/mohammadreza/Documents/Check"
 
     // get spark configuration
     val conf = new SparkConf()
       .setAppName(appName)
       .set("spark.casandra.connection.host", "localhost")
+      .setMaster("local[*]")
 
     // Check if running from IDE
     if (isIDE) {
       System.setProperty("hadoop.home.dir", "F:\\Libraries\\WinUtils") // required for winutils
-      conf.setMaster("local[*]")
-      checkpointDirectory = "file:///d:/temp"
+//      conf.setMaster("local[*]")
+//      checkpointDirectory = "file:///d:/temp"
     } else {
-      checkpointDirectory = "hdfs://project:9000/spark/checkpoint"
+//      checkpointDirectory = "hdfs://project:9000/spark/checkpoint"
     }
 
     // setup spark context

@@ -65,20 +65,25 @@ object StreamingJob {
         functions.rddToRDDActivity(input)
       }).cache()
 
-      // save data to HDFS
+//       save data to HDFS
       activityStream.foreachRDD { rdd =>
         val activityDF = rdd
           .toDF()
-          .selectExpr("timestamp_hour", "course_id", "action", "user_id", "session_d", "inputProps.topic as topic", "inputProps.kafkaPartition as kafkaPartition", "inputProps.fromOffset as fromOffset", "inputProps.untilOffset as untilOffset")
+          .selectExpr("course_id", "user_id", "session_id", "activity_event", "time"
+            /*"inputProps.topic as topic",
+            "inputProps.kafkaPartition as kafkaPartition",
+            "inputProps.fromOffset as fromOffset",
+            "inputProps.untilOffset as untilOffset"*/
+          )
 
         activityDF
           .write
-          .partitionBy("topic", "kafkaPartition", "timestamp_hour")
-          .mode(SaveMode.Append)
-          .parquet(hdfsPath)
+          .partitionBy(/*"topic", "kafkaPartition", */"time")
+//          .mode(SaveMode.Append)
+//          .parquet(hdfsPath)
       }
 
-      // activity by product
+//       activity by product
 //      val activityStateSpec =
 //      StateSpec
 //        .function(mapActivityStateFunc)
@@ -141,9 +146,9 @@ object StreamingJob {
 //          .map(sr => VisitorsByProduct(sr._1._1, sr._1._2, sr._2.approximateSize.estimate))
 //          //.toDF().registerTempTable("VisitorsByProduct")
 //      )*/
-//
-//      ssc
-//    }
+
+      ssc
+    }
 
     val ssc = getStreamingContext(streamingApp, sc, batchDuration)
     //ssc.remember(Minutes(5))

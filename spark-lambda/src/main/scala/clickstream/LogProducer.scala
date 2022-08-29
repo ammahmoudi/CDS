@@ -1,10 +1,10 @@
 package clickstream
 
 import java.util.Properties
-
 import config.Settings
 import org.apache.kafka.clients.producer.{KafkaProducer, Producer, ProducerConfig, ProducerRecord}
 
+import java.io.{File, FileInputStream}
 import scala.util.Random
 
 object LogProducer extends App {
@@ -14,8 +14,8 @@ object LogProducer extends App {
   //  val Products = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/products.csv")).getLines().toArray
   //  val Referrers = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/referrers.csv")).getLines().toArray
 
-  val Users = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/user_info.csv")).getLines().toArray
-  val Courses = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/course_info.csv")).getLines().toArray
+  val Users = scala.io.Source.fromInputStream(new FileInputStream(new File("/home/mohammadreza/Documents/CDS/user_info.csv"))).getLines().toArray
+  val Courses = scala.io.Source.fromInputStream(new FileInputStream(new File("/home/mohammadreza/Documents/CDS/course_info.csv"))).getLines().toArray
 
   //  val Visitors = (0 to wlc.visitors).map("Visitor-" + _)
   //  val Pages = (0 to wlc.pages).map("Page-" + _)
@@ -72,7 +72,9 @@ object LogProducer extends App {
       // "time": "2016-07-31T23:59:13"}
       val line = s"$adjustedTimestamp\t$course\t$user\t$action\t$session_id\n"
       val producerRecord = new ProducerRecord(topic, line)
+      println("HERE AM I!")
       kafkaProducer.send(producerRecord)
+      println(s"Sent: $producerRecord")
       //fw.write(line)
 
       if (iteration % incrementTimeEvery == 0) {
